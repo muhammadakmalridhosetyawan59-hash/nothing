@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Just One Question</title>
+
+  <style>
+    :root {
+      --bg-dark: #0f0f1e;
+      --bg-card: #1a1a2e;
+      --accent-pink: #ff6fa9;
+      --accent-glow: #ff9acb;
+      --text-light: #e8e8f5;
+      --text-muted: #b0b0c4;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Inter", "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, var(--bg-dark), #16213e);
+      color: var(--text-light);
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(255, 107, 169, 0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(255, 154, 203, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .screen {
+      text-align: center;
+      animation: fadeIn 0.8s ease;
+      position: relative;
+      z-index: 10;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .card {
+      background: rgba(26, 26, 46, 0.8);
+      backdrop-filter: blur(20px);
+      padding: 60px 50px;
+      border-radius: 30px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5),
+                  inset 0 1px 1px rgba(255, 107, 169, 0.2);
+      border: 1px solid rgba(255, 107, 169, 0.15);
+      animation: slideUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    h1 {
+      font-size: 32px;
+      background: linear-gradient(135deg, var(--accent-pink), var(--accent-glow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0 0 40px 0;
+      animation: textGlow 2s ease-in-out infinite;
+    }
+
+    p {
+      font-size: 17px;
+      color: var(--text-light);
+      line-height: 1.8;
+      margin: 0 0 20px 0;
+    }
+
+    button {
+      margin-top: 18px;
+      padding: 14px 32px;
+      border-radius: 50px;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--accent-pink), var(--accent-glow));
+      color: white;
+      box-shadow: 0 10px 30px rgba(255, 107, 169, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .primary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 2.5s infinite;
+    }
+
+    .primary::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent);
+      opacity: 0;
+    }
+
+    .primary:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 15px 40px rgba(255, 107, 169, 0.6);
+    }
+
+    .primary:active {
+      transform: translateY(-1px) scale(1.02);
+    }
+
+    #intro p {
+      font-size: 24px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .actions {
+      margin-top: 35px;
+    }
+
+    .no-area {
+      position: relative;
+      height: 140px;
+      margin-top: 25px;
+    }
+
+    #noBtn {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      border: 1px solid rgba(255, 107, 169, 0.3);
+      transition: all 0.15s ease;
+    }
+
+    #noBtn:hover {
+      background: rgba(255, 107, 169, 0.1);
+      border-color: rgba(255, 107, 169, 0.5);
+    }
+
+    .popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .popup-box {
+      background: rgba(26, 26, 46, 0.95);
+      padding: 40px 32px;
+      border-radius: 25px;
+      text-align: center;
+      animation: popScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7),
+                  inset 0 1px 1px rgba(255, 107, 169, 0.2);
+      border: 1px solid rgba(255, 107, 169, 0.2);
+      max-width: 380px;
+    }
+
+    .popup-box p {
+      font-size: 18px;
+      color: var(--text-light);
+      margin: 0 0 24px 0;
+    }
+
+    .credit {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 12px;
+      color: var(--text-muted);
+      z-index: 100;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0 }
+      to { opacity: 1 }
+    }
+
+    @keyframes popScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.7) rotate(-5deg);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) }
+      50% { transform: translateY(-15px) }
+    }
+
+    @keyframes textGlow {
+      0%, 100% { text-shadow: 0 0 10px rgba(255, 107, 169, 0.3) }
+      50% { text-shadow: 0 0 20px rgba(255, 154, 203, 0.6) }
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) }
+      100% { transform: translateX(100%) }
+    }
+
+    @keyframes buttonPopOut {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      40% {
+        opacity: 0;
+        transform: scale(0) rotate(-180deg);
+      }
+      60% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .card {
+        padding: 40px 28px;
+        border-radius: 20px;
+      }
+      h1 { font-size: 24px; }
+      p { font-size: 15px; }
+      .no-area { height: 120px; }
+      #noBtn { padding: 12px 20px; font-size: 13px; }
+      button { padding: 12px 24px; font-size: 14px; }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- Opening -->
+  <div id="intro" class="screen">
+    <p>Aku punya pertanyaan buat kamu…</p>
+    <button class="primary" onclick="start()">Tap here</button>
+  </div>
+
+  <!-- Question -->
+  <div id="question" class="screen hidden">
+    <div class="card">
+      <h1>Menurut kamu…</h1>
+      <p>Kamu cantik gak?</p>
+
+      <div class="actions">
+        <button class="primary" onclick="yesAnswer()">Iya</button>
+
+        <div class="no-area">
+          <button id="noBtn" onclick="moveNo()">Enggak</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="popup" class="popup hidden">
+  <div class="popup-box">
+    <p>kamu tuh cantik, rara 🤍</p>
+    <button class="primary" onclick="closePopup()">hehe</button>
+  </div>
+</div>
+
+  <div class="credit">@by ridho</div>
+
+  <script>
+  let noCount = 0;
+
+  function start() {
+    document.getElementById("intro").classList.add("hidden");
+    document.getElementById("question").classList.remove("hidden");
+  }
+
+  function moveNo() {
+    noCount++;
+
+    const area = document.querySelector(".no-area");
+    const btn = document.getElementById("noBtn");
+
+    // Trigger pop animation
+    btn.style.animation = "none";
+    setTimeout(() => {
+      btn.style.animation = "buttonPopOut 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
+    }, 10);
+
+    // Calculate jump distance (larger than before)
+    const maxX = Math.max(100, area.clientWidth - btn.offsetWidth - 40);
+    const maxY = Math.max(80, area.clientHeight - btn.offsetHeight - 40);
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    setTimeout(() => {
+      btn.style.left = x + "px";
+      btn.style.top = y + "px";
+      btn.style.transform = "none";
+    }, 300);
+
+    if (noCount === 3) {
+      setTimeout(() => {
+        document.getElementById("popup").classList.remove("hidden");
+      }, 600);
+    }
+  }
+
+  function closePopup() {
+    document.getElementById("popup").classList.add("hidden");
+  }
+
+  function yesAnswer() {
+    document.querySelector(".card").innerHTML = `
+      <h1>Hehe 🤍</h1>
+      <p>
+        akhirnya jujur juga yaa<br />
+        soalnya menurut aku kamu cantik banget, rara.
+      </p>
+    `;
+  }
+</script>
+
+
+</body>
+</html>
